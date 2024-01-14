@@ -1,6 +1,6 @@
 **Установка и запуск**
 
-Склонируйте репозиторий с github: #TODO <https://skillbox.ru/media/code/>
+Склонируйте репозиторий с github: <[https://github.com/mrsdoa/python_final_diplom.git](https://github.com/mrsdoa/python_final_diplom.git)>
 
 Для запуска проекта выполните команду из директории проекта:
 docker-compose up -d --build
