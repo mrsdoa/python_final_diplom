@@ -26,7 +26,7 @@ services:
   celery:
     build: .
     restart: always
-    command: celery -A diploma worker -l info
+    command: celery -A orders worker -l INFO
     depends_on:
       - redis
 

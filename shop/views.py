@@ -16,11 +16,12 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 from ujson import loads as load_json
 
-from .tasks import do_import_task, new_user_registered_task, new_order_task
 from shop.models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
     Contact, ConfirmEmailToken
 from shop.serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer, ContactSerializer
+
+from .tasks import process_avatar, process_product_image
 
 
 class RegisterAccount(APIView):

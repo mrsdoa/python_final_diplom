@@ -15,6 +15,12 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import os
+import django
+from django_rest_passwordreset.models import ResetPasswordToken
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'orders.settings')
+django.setup()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -37,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'shop.apps.ShopConfig',
+    'shop',
     'rest_framework',
     'rest_framework.authtoken',
     'django_rest_passwordreset',
@@ -45,7 +51,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.vk',
-    'allauth.socialaccount.providers.github'
+    'allauth.socialaccount.providers.github',
+    'baton',
+    'baton.autodiscover',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'baton.autodiscover',
 ]
 
 ROOT_URLCONF = 'orders.urls'
@@ -89,6 +99,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'diploma',
         'HOST': '127.0.0.1',
+        # 'HOST': '10.72.101.48',
         'PORT': '5432',
         'USER': 'postgres',
         'PASSWORD': '...'
@@ -176,14 +187,19 @@ REST_FRAMEWORK = {
         'user': '300/minute',
         'anon': '30/minute',
     },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+
 CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_ALWAYS_EAGER = True
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

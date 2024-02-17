@@ -1,24 +1,20 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from baton.autodiscover import admin as baton_admin
 
-from shop.models import User, Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
-    Contact, ConfirmEmailToken
-
+from shop.models import User, Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, Contact, ConfirmEmailToken
 
 class ContactInline(admin.TabularInline):
     model = Contact
     max_num = 1
 
-
 class ProductInline(admin.TabularInline):
     model = Product
     extra = 1
 
-
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 1
-
 
 class ProductParameterInline(admin.TabularInline):
     model = ProductParameter
@@ -31,38 +27,34 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password', 'type')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'company', 'position')}),
-        ('Permissions', {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
-        }),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
     list_display = ('id', 'email', 'first_name', 'last_name', 'is_staff')
 
-
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
     model = Shop
+
     fieldsets = (
         (None, {'fields': ('name', 'state')}),
         ('Additional Info', {'fields': ('url', 'user')}),
     )
     list_display = ('name', 'state', 'url')
 
-
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     model = Category
     inlines = [ProductInline]
 
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     pass
 
-
 @admin.register(ProductInfo)
 class ProductInfoAdmin(admin.ModelAdmin):
     model = ProductInfo
+
     fieldsets = (
         (None, {'fields': ('product', 'model', 'external_id', 'quantity')}),
         ('Цены', {'fields': ('price', 'price_rrc')}),
@@ -70,35 +62,42 @@ class ProductInfoAdmin(admin.ModelAdmin):
     list_display = ('product', 'external_id', 'price', 'price_rrc', 'quantity')
     inlines = [ProductParameterInline]
 
-
 @admin.register(Parameter)
 class ParameterAdmin(admin.ModelAdmin):
     pass
-
 
 @admin.register(ProductParameter)
 class ProductParameterAdmin(admin.ModelAdmin):
     pass
 
-
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     model = Order
+
     fields = ('user', 'state', 'contact')
     list_display = ('id', 'user', 'dt', 'state')
-    inlines = [OrderItemInline,]
-
+    inlines = [OrderItemInline]
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     pass
 
-
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
     list_display = ('id', 'city', 'phone')
 
-
 @admin.register(ConfirmEmailToken)
 class ConfirmEmailTokenAdmin(admin.ModelAdmin):
     list_display = ('user', 'key', 'created_at',)
+
+baton_admin.site.register(User, CustomUserAdmin)
+baton_admin.site.register(Shop, ShopAdmin)
+baton_admin.site.register(Category, CategoryAdmin)
+baton_admin.site.register(Product, ProductAdmin)
+baton_admin.site.register(ProductInfo, ProductInfoAdmin)
+baton_admin.site.register(Parameter, ParameterAdmin)
+baton_admin.site.register(ProductParameter, ProductParameterAdmin)
+baton_admin.site.register(Order, OrderAdmin)
+baton_admin.site.register(OrderItem, OrderItemAdmin)
+baton_admin.site.register(Contact, ContactAdmin)
+baton_admin.site.register(ConfirmEmailToken, ConfirmEmailTokenAdmin)
